@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-test
+  labels:
+    app.kubernetes.io/name: api-test
+spec:
+  progressDeadlineSeconds: 900
+  minReadySeconds: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: api-test
+  template:
+      metadata:
+        labels:
+          app.kubernetes.io/name: api-test
+      spec:
+        terminationGracePeriodSeconds: 60
+        serviceAccountName: api-test
+        enableServiceLinks: false
+        volumes:
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf
+            items:
+              - key: index.html
+                path: index.html
+        containers:
+          - name: main
+            image: nginx:1.23.3
+            volumeMounts:
+            - mountPath: /usr/share/nginx/html
+              readOnly: true
+              name: nginx-conf
+            ports:
+              - name: http
+                containerPort: 80
+                protocol: TCP
+            resources:
+              limits:
+                cpu: 100m
+                memory: 100Mi
+              requests:
+                cpu: 50m
+                memory: 50Mi

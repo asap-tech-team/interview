@@ -1,0 +1,9 @@
+---
+stages:
+  - test
+
+include:
+  - project: Infrastructure/shared-ci
+    file: test/pre-commit.yaml
+  - project: Infrastructure/shared-ci
+    file: test/deployments-kustomize.yaml
